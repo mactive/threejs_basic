@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
+import * as OrbitControls from 'three-orbitcontrols';
 
 const gui = new dat.GUI()
 const world = {
@@ -10,6 +11,8 @@ const world = {
     heightSegments: 10
   }
 }
+
+
 gui.add(world.plane, 'width', 1, 20).onChange(regeneratePlane);
 gui.add(world.plane, 'height', 1, 20).onChange(regeneratePlane);
 gui.add(world.plane, 'widthSegments', 1, 20).onChange(regeneratePlane);
@@ -29,6 +32,14 @@ const renderer = new THREE.WebGLRenderer()
 console.log(scene)
 console.log(camera)
 console.log(renderer)
+document.body.appendChild(renderer.domElement)
+
+// OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement)
+console.log(controls)
+// controls.enableDamping = true
+// controls.dampingFactor = 0.25
+// controls.enableZoom = false
 
 scene.background = new THREE.Color( 0x000000 );
 
@@ -86,7 +97,3 @@ function animate() {
 animate()
 
 
-
-// renderer.render(scene, camera)
-
-document.body.appendChild(renderer.domElement)
