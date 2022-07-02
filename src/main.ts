@@ -1,4 +1,27 @@
 import * as THREE from 'three';
+import * as dat from 'dat.gui';
+
+const gui = new dat.GUI()
+const world = {
+  plane: {
+    width: 10,
+    height: 10,
+    widthSegments: 10,
+    heightSegments: 10
+  }
+}
+gui.add(world.plane, 'width', 1, 20).onChange(regeneratePlane);
+gui.add(world.plane, 'height', 1, 20).onChange(regeneratePlane);
+gui.add(world.plane, 'widthSegments', 1, 20).onChange(regeneratePlane);
+gui.add(world.plane, 'heightSegments', 1, 20).onChange(regeneratePlane);
+
+
+function regeneratePlane () {
+  planeMesh.geometry.dispose()
+  planeMesh.geometry = new THREE.PlaneGeometry(
+    world.plane.width, world.plane.height, world.plane.widthSegments, world.plane.heightSegments)
+  remesh()
+}
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000)
@@ -34,15 +57,18 @@ console.log('planeMesh',planeMesh)
 scene.add(planeMesh)
 
 // muplate the plane geometry point
-console.log(planeMesh.geometry.attributes.position)
-const { array } = planeMesh.geometry.attributes.position
-for (let i = 0; i < array.length; i += 3) {
-  const x = array[i]
-  const y = array[i + 1]
-  const z = array[i + 2]
-  array[i + 2] = z + Math.random()/2 
+function remesh() {
+  console.log(planeMesh.geometry.attributes.position)
+  const { array } = planeMesh.geometry.attributes.position
+  for (let i = 0; i < array.length; i += 3) {
+    const x = array[i]
+    const y = array[i + 1]
+    const z = array[i + 2]
+    array[i + 2] = z + Math.random()/2 
+  }
 }
-
+remesh()
+  
 // light
 const light = new THREE.DirectionalLight(0xffffff, 1)
 light.position.set(0, 0, 1)
@@ -54,7 +80,7 @@ function animate() {
   renderer.render(scene, camera)
   // mesh.rotation.x += 0.01
   // mesh.rotation.y += 0.01
-  planeMesh.rotation.x += 0.01
+  // planeMesh.rotation.x += 0.01
 }
 
 animate()
