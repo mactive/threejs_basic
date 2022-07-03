@@ -22,9 +22,22 @@ gui.add(world.plane, 'heightSegments', 1, 20).onChange(regeneratePlane);
 function regeneratePlane () {
   planeMesh.geometry.dispose()
   planeMesh.geometry = new THREE.PlaneGeometry(
-    world.plane.width, world.plane.height, world.plane.widthSegments, world.plane.heightSegments)
+    world.plane.width, 
+    world.plane.height, 
+    world.plane.widthSegments, 
+    world.plane.heightSegments
+  )
   remesh()
 }
+
+// raycaster & mouse
+const raycaster = new THREE.Raycaster()
+console.log(raycaster)
+const mouse = {
+  x: undefined,
+  y: undefined
+}
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000)
@@ -84,6 +97,9 @@ remesh()
 const light = new THREE.DirectionalLight(0xffffff, 1)
 light.position.set(0, 0, 1)
 scene.add(light)
+const backLight = new THREE.DirectionalLight(0xffffff, 1)
+backLight.position.set(0, 0, 1)
+scene.add(backLight)
 
 // animate
 function animate() {
@@ -92,8 +108,18 @@ function animate() {
   // mesh.rotation.x += 0.01
   // mesh.rotation.y += 0.01
   // planeMesh.rotation.x += 0.01
+  raycaster.setFromCamera(mouse, camera)
+  const intersects = raycaster.intersectObject(planeMesh)
+  if (intersects.length > 0) {
+    console.log('intersects',intersects[0])
+  }
 }
 
 animate()
 
-
+addEventListener('mousemove', (event) => {
+  // 坐标轴对齐
+  mouse.x = (event.clientX / innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / innerHeight) * 2 + 1
+  // console.log(mouse)
+})
