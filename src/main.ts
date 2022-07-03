@@ -7,10 +7,10 @@ import { BufferGeometry, Mesh } from 'three';
 const gui = new dat.GUI()
 const world = {
   plane: {
-    width: 10,
-    height: 10,
-    widthSegments: 10,
-    heightSegments: 10
+    width: 400,
+    height: 400,
+    widthSegments: 50,
+    heightSegments: 50
   }
 }
 
@@ -56,12 +56,12 @@ console.log(controls)
 // controls.dampingFactor = 0.25
 // controls.enableZoom = false
 
-scene.background = new THREE.Color( 0x000000 );
+scene.background = new THREE.Color( 0xeeeeee );
 
 
 renderer.setSize(innerWidth, innerHeight )
 renderer.setPixelRatio(devicePixelRatio)
-camera.position.z = 5
+camera.position.z = 50
 
 // boxGeometry
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
@@ -75,7 +75,12 @@ const mesh = new THREE.Mesh(boxGeometry, material)
 // scene.add(mesh)
 
 // planeGeometry
-const planeGeometry = new THREE.PlaneGeometry(5, 5, 10, 10)
+const planeGeometry = new THREE.PlaneGeometry(
+  world.plane.width, 
+  world.plane.height, 
+  world.plane.widthSegments, 
+  world.plane.heightSegments
+)
 const planeMaterial = new THREE.MeshPhongMaterial({
   // color: 0x666666, 
   side: THREE.DoubleSide,
@@ -89,13 +94,24 @@ scene.add(planeMesh)
 // muplate the plane geometry point
 function remesh() {
   console.log(planeMesh.geometry.attributes.position)
+  const randomValues = []
   const { array } = planeMesh.geometry.attributes.position
-  for (let i = 0; i < array.length; i += 3) {
-    const x = array[i]
-    const y = array[i + 1]
-    const z = array[i + 2]
-    array[i + 2] = z + Math.random()/2 
+  for (let i = 0; i < array.length; i++) {
+    if (i % 3 === 0) {
+      const x = array[i]
+      const y = array[i + 1]
+      const z = array[i + 2]
+
+      array[i] = x + (Math.random() - 0.5) * 3
+      array[i + 1] = y + (Math.random() - 0.5) * 3
+      array[i + 2] = z + (Math.random() - 0.5) * 3
+    }
+    randomValues.push(Math.random() * Math.PI * 2)
   }
+  planeMesh.geometry.attributes.position.randomValues = randomValues
+  planeMesh.geometry.attributes.position.originalPosition = 
+    planeMesh.geometry.attributes.position.array
+
 
   // set color
   const colors = []
@@ -119,6 +135,7 @@ backLight.position.set(0, 0, 1)
 scene.add(backLight)
 
 // animate
+let frame = 0
 function animate() {
   requestAnimationFrame(animate)
   renderer.render(scene, camera)
@@ -126,11 +143,32 @@ function animate() {
   // mesh.rotation.y += 0.01
   // planeMesh.rotation.x += 0.01
   raycaster.setFromCamera(mouse, camera)
+
+  frame += 0.01
+  const {
+    array,
+    originalPosition,
+    randomValues
+  } = planeMesh.geometry.attributes.position
+  for (let i = 0; i < array.length; i += 3) {
+    // x
+    array[i] = originalPosition[i] + Math.cos(frame + randomValues[i]) * 0.01
+
+    // y
+    array[i + 1] =
+      originalPosition[i + 1] + Math.sin(frame + randomValues[i + 1]) * 0.001
+  }
+
+  planeMesh.geometry.attributes.position.needsUpdate = true
+
+
+
+  // intersects
   const intersects = raycaster.intersectObject(planeMesh)
   if (intersects.length > 0) {
     const { color } = intersects[0].object.geometry.attributes
 
-    console.log('intersects',intersects[0])
+    // console.log('intersects',intersects[0])
     // vertice 1
     color.setX(intersects[0].face.a, 0.1)
     color.setY(intersects[0].face.a, 0.5)
