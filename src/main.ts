@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import * as OrbitControls from 'three-orbitcontrols';
+import { BufferGeometry, Mesh } from 'three';
 
 const gui = new dat.GUI()
 const world = {
@@ -63,7 +64,10 @@ camera.position.z = 5
 
 // boxGeometry
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({color: 0x00ff00, side:THREE.DoubleSide})
+const material = new THREE.MeshBasicMaterial({
+  color: 0x00ff00, 
+  side:THREE.DoubleSide
+})
 console.log(boxGeometry)
 console.log(material)
 const mesh = new THREE.Mesh(boxGeometry, material)
@@ -72,9 +76,10 @@ const mesh = new THREE.Mesh(boxGeometry, material)
 // planeGeometry
 const planeGeometry = new THREE.PlaneGeometry(5, 5, 10, 10)
 const planeMaterial = new THREE.MeshPhongMaterial({
-  color: 0x666666, 
+  // color: 0x666666, 
   side: THREE.DoubleSide,
-  flatShading: true
+  flatShading: true,
+  vertexColors: true,
 })
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial)
 console.log('planeMesh',planeMesh)
@@ -91,6 +96,17 @@ function remesh() {
     array[i + 2] = z + Math.random()/2 
   }
 }
+
+// set color
+const colors = []
+for (let i = 0; i< planeMesh.geometry.attributes.position.count; i++) {
+  colors.push(0, 0.19, 0.4) // lightblue
+}
+planeMesh.geometry.setAttribute(
+  'color',
+  new THREE.BufferAttribute(new Float32Array(colors), 3)
+)
+
 remesh()
   
 // light
@@ -111,7 +127,25 @@ function animate() {
   raycaster.setFromCamera(mouse, camera)
   const intersects = raycaster.intersectObject(planeMesh)
   if (intersects.length > 0) {
+    const { color } = intersects[0].object.geometry.attributes
+
     console.log('intersects',intersects[0])
+    // vertice 1
+    color.setX(intersects[0].face.a, 0.1)
+    color.setY(intersects[0].face.a, 0.5)
+    color.setZ(intersects[0].face.a, 1)
+
+    // vertice 2
+    color.setX(intersects[0].face.b, 0.1)
+    color.setY(intersects[0].face.b, 0.5)
+    color.setZ(intersects[0].face.b, 1)
+
+    // vertice 3
+    color.setX(intersects[0].face.c, 0.1)
+    color.setY(intersects[0].face.c, 0.5)
+    color.setZ(intersects[0].face.c, 1)
+
+    color.needsUpdate = true
   }
 }
 
