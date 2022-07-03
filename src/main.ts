@@ -1,3 +1,4 @@
+import gsap from 'gsap'
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import * as OrbitControls from 'three-orbitcontrols';
@@ -95,17 +96,17 @@ function remesh() {
     const z = array[i + 2]
     array[i + 2] = z + Math.random()/2 
   }
-}
 
-// set color
-const colors = []
-for (let i = 0; i< planeMesh.geometry.attributes.position.count; i++) {
-  colors.push(0, 0.19, 0.4) // lightblue
+  // set color
+  const colors = []
+  for (let i = 0; i< planeMesh.geometry.attributes.position.count; i++) {
+    colors.push(0, 0.19, 0.4) // lightblue
+  }
+  planeMesh.geometry.setAttribute(
+    'color',
+    new THREE.BufferAttribute(new Float32Array(colors), 3)
+  )
 }
-planeMesh.geometry.setAttribute(
-  'color',
-  new THREE.BufferAttribute(new Float32Array(colors), 3)
-)
 
 remesh()
   
@@ -146,6 +147,39 @@ function animate() {
     color.setZ(intersects[0].face.c, 1)
 
     color.needsUpdate = true
+
+    const initialColor = {
+      r: 0,
+      g: 0.19,
+      b: 0.4
+    }
+    const hoverColor = {
+      r: 0.1,
+      g: 0.5,
+      b: 1
+    }
+    gsap.to(hoverColor, {
+      r: initialColor.r,
+      g: initialColor.g,
+      b: initialColor.b,
+      duration: 0.8, 
+      onUpdate: () => {
+        color.setX(intersects[0].face.a, hoverColor.r)
+        color.setY(intersects[0].face.a, hoverColor.g)
+        color.setZ(intersects[0].face.a, hoverColor.b)
+
+        // vertice 2
+        color.setX(intersects[0].face.b, hoverColor.r)
+        color.setY(intersects[0].face.b, hoverColor.g)
+        color.setZ(intersects[0].face.b, hoverColor.b)
+
+        // vertice 3
+        color.setX(intersects[0].face.c, hoverColor.r)
+        color.setY(intersects[0].face.c, hoverColor.g)
+        color.setZ(intersects[0].face.c, hoverColor.b)
+        color.needsUpdate = true
+      }
+    })
   }
 }
 
