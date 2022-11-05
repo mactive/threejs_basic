@@ -61,7 +61,7 @@ scene.background = new THREE.Color( 0xeeeeee );
 
 renderer.setSize(innerWidth, innerHeight )
 renderer.setPixelRatio(devicePixelRatio)
-camera.position.z = 50
+camera.position.z = 200
 
 // boxGeometry
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
