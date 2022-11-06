@@ -5,9 +5,6 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,700&family=Space+Mono&display=swap" rel="stylesheet" />
     <link href="./src/style.css" rel="stylesheet" />
     <title>Vite App</title>
   </head>
@@ -15,34 +12,9 @@
     <!-- CLICK AND DRAG TO ROTATE SCENE -->
     <!-- LEARN TO MAKE THIS AT https://www.youtube.com/c/chriscourses -->
     <div id="app">
-      <div
-        class="absolute text-white text-center"
-        style="top: 50%; transform: translate(-50%, -50%); left: 50%;"
-      >
-        <h1 class="font-space-mono text-sm uppercase tracking-wide">
-          Mengqian.mac
-        </h1>
-        <p class="font-exo text-4xl">
-          Three.js Camera & Raycaster & OrbitControls Demo
-        </p>
-        <a
-          class="border px-4 py-2 rounded-lg text-sm font-space-mono uppercase mt-8 hover:bg-white hover:text-gray-800 inline-block"
-        >
-          View Work
-        </a>
-      </div>
-      <!-- Social -->
-      <div class="twitter social-icon">
-        <a href="https://twitter.com/christopher4lis" target="_blank"></a>
-        <i class="fa fa-twitter fa-lg"></i>
-      </div>
-
-      <div class="youtube social-icon">
-        <a href="https://www.youtube.com/c/chriscourses" target="_blank"></a>
-        <i class="fa fa-youtube fa-lg"></i>
-      </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
+    <!-- <script type="module" src="/src/main.ts"></script> -->
+    <script type="module" src="/src/axeshelper.ts"></script>
   </body>
 </html>
 
