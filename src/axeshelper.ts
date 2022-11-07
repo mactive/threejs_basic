@@ -12,8 +12,8 @@ const scene = new THREE.Scene();
 const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshBasicMaterial({ color: 0xFF0000 })
 const mesh = new THREE.Mesh(geometry, material)
-mesh.position.set(1, -0.5, 0.5)
-mesh.scale.set(2, 0.5, 0.5)
+// mesh.position.set(100, 100, 0)
+mesh.scale.set(0.5, 0.5, 0.5)
 
 /**
  * group
@@ -53,7 +53,7 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height)
 camera.position.set(1, 1, 3)
 scene.add(camera)
 
-camera.lookAt(mesh.position)
+// camera.lookAt(mesh.position)
 
 const axeshelper = new THREE.AxesHelper(2)
 scene.add(axeshelper)
@@ -76,9 +76,15 @@ function animate() {
     const elapsedTime = clock.getElapsedTime()
     console.log(elapsedTime)
     requestAnimationFrame(animate)
+    // one second on rotation
     mesh.rotation.y = elapsedTime * Math.PI * 2
-    group.rotation.y += Math.PI / 600
+    // group.rotation.y += Math.PI / 600
+
+    // mesh run circle
+    mesh.position.y = Math.sin(elapsedTime)
+    mesh.position.x = Math.cos(elapsedTime)
+
     renderer.render(scene, camera)
 }
-animate()
+animate() 
 renderer.render(scene, camera)
